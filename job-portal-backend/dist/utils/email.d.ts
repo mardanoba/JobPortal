@@ -1,0 +1,2 @@
+export declare function sendEmail(to: string, subject: string, text: string, html?: string): Promise<import("nodemailer/lib/smtp-transport/index.js").SentMessageInfo>;
+//# sourceMappingURL=email.d.ts.map

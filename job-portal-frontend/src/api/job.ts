@@ -27,7 +27,7 @@ export const updateJob = (jobId: number, data: any, token: string) =>
   api.put(`/api/jobs/update/${jobId}`, data, { headers: { Authorization: `Bearer ${token}` } });
 
 // Close a job (employer)
-export const closeJob = (jobId: number, token: string) =>
+export const closeJob = (jobId: number, token: string) =>                        
   api.put(`/api/jobs/close/${jobId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
 
 // Get applications for a job (employer)

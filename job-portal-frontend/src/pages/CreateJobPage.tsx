@@ -1,52 +1,77 @@
-// src/pages/CreateJobPage.tsx
 import { useState } from "react";
-import axios from "axios";
+import { createJob } from "../api/job";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateJobPage() {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    category: "",
-    type: "",
     location: "",
     salary: "",
-    requirements: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const [msg, setMsg] = useState("");
+  const nav = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const token = localStorage.getItem("token");
+    setMsg("");
+
     try {
-      await axios.post("http://localhost:5000/api/jobs/create", form, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      alert("Job created successfully!");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to create job");
+      const res = await createJob(form);
+
+      if (res.success) {
+        setMsg("Job created successfully!");
+        setTimeout(() => nav("/employer/dashboard"), 1200);
+      } else {
+        setMsg("Failed to create job.");
+      }
+    } catch (err: any) {
+      setMsg(err.message || "Error creating job");
     }
-  };
+  }
 
   return (
-    <div className="p-6 max-w-lg mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Create a New Job</h1>
-      <form onSubmit={handleSubmit} className="space-y-3">
-        {Object.keys(form).map((key) => (
-          <input
-            key={key}
-            name={key}
-            value={(form as any)[key]}
-            onChange={handleChange}
-            placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-            className="border p-2 w-full rounded-md"
-          />
-        ))}
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md">
-          Create Job
+    <div className="max-w-xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">Post a New Job</h1>
+
+      {msg && <p className="text-blue-600 mb-2">{msg}</p>}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          className="w-full border p-2 rounded"
+          type="text"
+          placeholder="Job Title"
+          value={form.title}
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
+        />
+
+        <textarea
+          className="w-full border p-2 rounded"
+          placeholder="Job Description"
+          rows={4}
+          value={form.description}
+          onChange={(e) => setForm({ ...form, description: e.target.value })}
+        />
+
+        <input
+          className="w-full border p-2 rounded"
+          type="text"
+          placeholder="Location"
+          value={form.location}
+          onChange={(e) => setForm({ ...form, location: e.target.value })}
+        />
+
+        <input
+          className="w-full border p-2 rounded"
+          type="text"
+          placeholder="Salary (optional)"
+          value={form.salary}
+          onChange={(e) => setForm({ ...form, salary: e.target.value })}
+        />
+
+        <button className="bg-blue-600 text-white p-2 w-full rounded hover:bg-blue-700">
+          Submit
         </button>
       </form>
     </div>

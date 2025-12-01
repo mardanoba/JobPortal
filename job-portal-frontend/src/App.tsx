@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
-// ✅ Public Pages
+// 🟢 Public Pages
 import LandingPage from "./pages/LandingPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
@@ -12,19 +12,20 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ProtectedTestPage from "./pages/ProtectedTestPage";
 
-// ✅ Job Seeker Pages
-import JobSeekerPage from "./pages/JobSeekerPage"; // Dashboard
+// 👩‍💼 Job Seeker Pages
+import JobSeekerPage from "./pages/JobSeekerPage";
 import JobsListPage from "./pages/JobsListPage";
 import ApplicationsPage from "./pages/ApplicationsPage";
 import ProfilePage from "./pages/ProfilePage";
+import ApplyJobPage from "./pages/ApplyJobPage";
 
-// ✅ Employer Pages
+// 🏢 Employer Pages (ALL located in /pages/)
 import EmployerDashboardPage from "./pages/EmployerDashboardPage";
 import CreateJobPage from "./pages/CreateJobPage";
 import EditJobPage from "./pages/EditJobPage";
 import JobApplicationsPage from "./pages/JobApplicationsPage";
 
-// ✅ Type for logged-in user
+// 🔐 User type
 type User = {
   id: number;
   role: string;
@@ -36,6 +37,7 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
+
     if (token && userData) {
       try {
         setUser(JSON.parse(userData));
@@ -45,7 +47,7 @@ function App() {
     }
   }, []);
 
-  // ✅ Auth wrapper
+  // 🔒 Auth Wrapper
   const RequireAuth = ({
     children,
     role,
@@ -54,7 +56,11 @@ function App() {
     role?: string;
   }) => {
     if (!user) return <Navigate to="/login" replace />;
-    if (role && user.role !== role) return <Navigate to="/" replace />;
+
+    if (role && user.role !== role) {
+      return <Navigate to="/" replace />;
+    }
+
     return <>{children}</>;
   };
 
@@ -68,8 +74,9 @@ function App() {
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/job-seeker/apply/:jobId" element={<ApplyJobPage />} />
 
-        {/* 🔒 Protected Test Route */}
+        {/* 🔒 Test Protected Route */}
         <Route
           path="/protected"
           element={
@@ -80,7 +87,6 @@ function App() {
         />
 
         {/* 👩‍💼 Job Seeker Routes */}
-        {/* Dashboard route */}
         <Route
           path="/job-seeker"
           element={
@@ -123,6 +129,7 @@ function App() {
             </RequireAuth>
           }
         />
+
         <Route
           path="/employer/create-job"
           element={
@@ -131,6 +138,7 @@ function App() {
             </RequireAuth>
           }
         />
+
         <Route
           path="/employer/edit-job/:id"
           element={
@@ -139,6 +147,7 @@ function App() {
             </RequireAuth>
           }
         />
+
         <Route
           path="/employer/job/:jobId/applications"
           element={
@@ -148,7 +157,7 @@ function App() {
           }
         />
 
-        {/* 🚫 Fallback */}
+        {/* Catch All */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

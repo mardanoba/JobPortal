@@ -26,7 +26,6 @@ const JobSeekerPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Get user from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (!storedUser) {
@@ -34,14 +33,12 @@ const JobSeekerPage: React.FC = () => {
       return;
     }
     try {
-      const parsedUser: User = JSON.parse(storedUser);
-      setUser(parsedUser);
+      setUser(JSON.parse(storedUser));
     } catch {
       navigate("/login");
     }
   }, [navigate]);
 
-  // Fetch jobs
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -63,25 +60,46 @@ const JobSeekerPage: React.FC = () => {
   if (loading) return <div>Loading jobs...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-400 via-blue-500 to-sky-400 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-black via-neutral-900 to-black p-6 text-white">
       {/* Header */}
-      <header className="flex flex-col md:flex-row justify-between items-center mb-6 text-white">
-        <h1 className="text-3xl font-bold mb-4 md:mb-0">Welcome, {user.name}</h1>
+      <header className="flex flex-col md:flex-row justify-between items-center mb-10">
+        <h1 className="text-4xl font-extrabold tracking-wide text-yellow-400 drop-shadow-lg mb-4 md:mb-0">
+          Welcome, {user.name}
+        </h1>
+
         <div className="flex gap-4">
           <button
-            className="px-4 py-2 bg-white/30 rounded-xl font-medium hover:bg-white/50 transition"
+            className="
+              px-5 py-2 rounded-xl
+              bg-yellow-500/20 border border-yellow-500/30
+              text-yellow-300 font-medium
+              hover:bg-yellow-500/30 hover:shadow-[0_0_15px_rgba(255,200,50,0.4)]
+              transition
+            "
             onClick={() => navigate("/job-seeker/applications")}
           >
             Your Applications
           </button>
+
           <button
-            className="px-4 py-2 bg-white/30 rounded-xl font-medium hover:bg-white/50 transition"
+            className="
+              px-5 py-2 rounded-xl
+              bg-yellow-500/20 border border-yellow-500/30
+              text-yellow-300 font-medium
+              hover:bg-yellow-500/30 hover:shadow-[0_0_15px_rgba(255,200,50,0.4)]
+              transition
+            "
             onClick={() => navigate("/job-seeker/profile")}
           >
             Profile
           </button>
+
           <button
-            className="px-4 py-2 bg-red-500 rounded-xl font-medium hover:bg-red-600 transition"
+            className="
+              px-5 py-2 rounded-xl
+              bg-red-600 text-white font-semibold
+              hover:bg-red-700 transition
+            "
             onClick={() => {
               localStorage.removeItem("token");
               localStorage.removeItem("user");
@@ -93,45 +111,80 @@ const JobSeekerPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Job Search */}
-      <section className="mb-6 p-6 bg-white/90 rounded-2xl shadow-xl max-w-4xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Search Jobs</h2>
+      {/* Search Section */}
+      <section
+        className="
+          p-8 max-w-4xl mx-auto
+          bg-white/5 backdrop-blur-2xl rounded-3xl
+          border border-yellow-600/20
+          shadow-[0_0_40px_rgba(255,200,50,0.1)]
+        "
+      >
+        <h2 className="text-3xl font-bold text-yellow-400 mb-6 drop-shadow-lg">
+          Search Jobs
+        </h2>
+
         <input
           type="text"
           placeholder="Search jobs by title..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full p-3 rounded-lg border border-gray-300 mb-4 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+          className="
+            w-full p-4 rounded-lg mb-6
+            bg-black/50 border border-yellow-500/20
+            placeholder-gray-400 text-white
+            focus:ring-2 focus:ring-yellow-500/50
+            focus:outline-none transition
+          "
         />
-        {error && <p className="text-red-600 mb-2">{error}</p>}
+
+        {error && <p className="text-red-500 mb-3">{error}</p>}
+
+        {/* Jobs List */}
         {filteredJobs.length === 0 ? (
-          <p className="text-gray-600">No jobs found.</p>
+          <p className="text-gray-300">No jobs found.</p>
         ) : (
-          <ul className="space-y-3">
+          <ul className="space-y-6">
             {filteredJobs.map((job) => (
               <li
                 key={job.id}
-                className="p-4 bg-white rounded-xl shadow flex justify-between items-center"
+                className="
+                  p-6 rounded-2xl 
+                  bg-black/40 border border-yellow-500/20 
+                  shadow-[0_0_20px_rgba(255,200,50,0.05)]
+                  hover:bg-black/50
+                  hover:shadow-[0_0_25px_rgba(255,200,50,0.15)]
+                  transition
+                "
               >
-                <div>
-                  <h3 className="text-lg font-semibold">{job.title}</h3>
-                  <p className="text-gray-500 text-sm">
-                    {job.company} - {job.location}
-                  </p>
+                <h3 className="text-2xl font-semibold text-yellow-300 drop-shadow">
+                  {job.title}
+                </h3>
+                <p className="text-gray-300 mt-1">{job.company} – {job.location}</p>
+                <p className="text-gray-400 mt-3 text-sm line-clamp-3">
+                  {job.description}
+                </p>
+
+                <div className="flex justify-end mt-6">
+                  <button
+                    onClick={() => navigate(`/job-seeker/apply/${job.id}`)}
+                    className="
+                      px-6 py-2 rounded-xl
+                      bg-gradient-to-r from-yellow-500 to-yellow-600
+                      text-black font-bold
+                      hover:from-yellow-400 hover:to-yellow-500
+                      hover:shadow-[0_0_20px_rgba(255,200,50,0.5)]
+                      transform hover:scale-[1.03]
+                      transition-all duration-300
+                    "
+                  >
+                    Apply Now
+                  </button>
                 </div>
-                <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                  Apply
-                </button>
               </li>
             ))}
           </ul>
         )}
-      </section>
-
-      {/* Your Applications */}
-      <section className="p-6 bg-white/90 rounded-2xl shadow-xl max-w-4xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-2 text-gray-800">Your Applications</h2>
-        <p className="text-gray-600">Track the status of your job applications here. (Coming soon)</p>
       </section>
     </div>
   );

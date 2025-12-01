@@ -8,6 +8,14 @@ import {
   getJobs,
   applyToJob,
   getApplicationsByJob,
+  // new helpers
+  getJobsByEmployer,
+  getRecentJobsByEmployer,
+  getRecentApplicationsByEmployer,
+  getJobsCountByEmployer,
+  getActiveJobsCountByEmployer,
+  getApplicationsCountByEmployer,
+  getPendingApplicationsCountByEmployer,
 } from "../db/repository.js";
 
 // Create job (employer)
@@ -85,5 +93,80 @@ export async function getApplicationsController(req: Request, res: Response) {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to get applications" });
+  }
+}
+
+/* =========================
+   Employer-specific controllers
+   ========================= */
+
+/**
+ * GET /api/jobs/employer
+ * Get all jobs posted by the authenticated employer
+ */
+export async function getEmployerJobsController(req: Request, res: Response) {
+  const employer_id = (req as any).user.id;
+  try {
+    const jobs = await getJobsByEmployer(employer_id);
+    res.json(jobs);
+  } catch (err) {
+    console.error("getEmployerJobsController error:", err);
+    res.status(500).json({ error: "Failed to fetch employer jobs" });
+  }
+}
+
+/**
+ * GET /api/jobs/employer/stats
+ * Returns counts used by the employer dashboard
+ */
+export async function getEmployerStatsController(req: Request, res: Response) {
+  const employer_id = (req as any).user.id;
+  try {
+    const [totalJobs, activeJobs, totalApplications, pendingApplications] = await Promise.all([
+      getJobsCountByEmployer(employer_id),
+      getActiveJobsCountByEmployer(employer_id),
+      getApplicationsCountByEmployer(employer_id),
+      getPendingApplicationsCountByEmployer(employer_id),
+    ]);
+
+    res.json({
+      totalJobs: Number(totalJobs) || 0,
+      activeJobs: Number(activeJobs) || 0,
+      totalApplications: Number(totalApplications) || 0,
+      pendingApplications: Number(pendingApplications) || 0,
+    });
+  } catch (err) {
+    console.error("getEmployerStatsController error:", err);
+    res.status(500).json({ error: "Failed to fetch employer stats" });
+  }
+}
+
+/**
+ * GET /api/jobs/employer/recent?limit=3
+ */
+export async function getRecentJobsByEmployerController(req: Request, res: Response) {
+  const employer_id = (req as any).user.id;
+  const limit = Number(req.query.limit) || 3;
+  try {
+    const jobs = await getRecentJobsByEmployer(employer_id, limit);
+    res.json(jobs);
+  } catch (err) {
+    console.error("getRecentJobsByEmployerController error:", err);
+    res.status(500).json({ error: "Failed to fetch recent jobs" });
+  }
+}
+
+/**
+ * GET /api/jobs/employer/applications/recent?limit=5
+ */
+export async function getRecentApplicationsByEmployerController(req: Request, res: Response) {
+  const employer_id = (req as any).user.id;
+  const limit = Number(req.query.limit) || 5;
+  try {
+    const apps = await getRecentApplicationsByEmployer(employer_id, limit);
+    res.json(apps);
+  } catch (err) {
+    console.error("getRecentApplicationsByEmployerController error:", err);
+    res.status(500).json({ error: "Failed to fetch recent applications" });
   }
 }

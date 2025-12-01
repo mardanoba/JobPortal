@@ -29,7 +29,6 @@ export default function RegisterPage() {
       setMsg(res.data.message || "Registered successfully!");
       setSuccess(true);
 
-      // Pass email to verification page
       navigate("/verify-email", { state: { email: form.email } });
       setForm({ name: "", email: "", password: "", role: "job_seeker" });
     } catch (err: any) {
@@ -41,7 +40,8 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-sky-300 via-blue-400 to-indigo-500 overflow-hidden">
+    <div className="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-black via-neutral-900 to-black overflow-hidden text-white">
+      {/* Gold particles */}
       <Particles
         id="tsparticles"
         init={particlesInit}
@@ -50,10 +50,10 @@ export default function RegisterPage() {
           background: { color: { value: "transparent" } },
           fpsLimit: 60,
           particles: {
-            color: { value: "#ffffff" },
+            color: { value: "#FFD633" },
             links: {
               enable: true,
-              color: "#ffffff",
+              color: "#FFD633",
               distance: 120,
               opacity: 0.3,
               width: 1,
@@ -68,16 +68,22 @@ export default function RegisterPage() {
         className="absolute inset-0 -z-10"
       />
 
+      {/* Form Container */}
       <form
         onSubmit={onSubmit}
-        className="backdrop-blur-xl bg-white/30 border border-white/40 shadow-2xl rounded-3xl p-10 w-full max-w-md text-center transform transition duration-500 hover:scale-[1.02] hover:shadow-sky-300/60"
+        className="
+          backdrop-blur-xl bg-white/5 border border-yellow-600/20
+          shadow-[0_0_50px_rgba(255,200,50,0.1)]
+          rounded-3xl p-10 w-full max-w-md text-center
+          transform transition duration-500 hover:scale-[1.02] hover:shadow-[0_0_60px_rgba(255,200,50,0.3)]
+        "
       >
-        <h2 className="text-3xl font-extrabold mb-6 text-blue-900 drop-shadow-md tracking-wide">
+        <h2 className="text-3xl font-extrabold mb-6 text-yellow-400 drop-shadow-lg tracking-wide">
           Register
         </h2>
 
         {msg && (
-          <p className={`mb-4 text-sm font-semibold ${success ? "text-green-800" : "text-red-700"}`}>
+          <p className={`mb-4 text-sm font-semibold ${success ? "text-green-400" : "text-red-500"}`}>
             {msg}
           </p>
         )}
@@ -88,7 +94,11 @@ export default function RegisterPage() {
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="Name"
-              className="w-full mb-4 p-3 rounded-lg border border-white/30 bg-white/50 text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+              className="
+                w-full mb-4 p-3 rounded-lg border border-yellow-500/30
+                bg-black/50 text-white placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-yellow-500/50 transition
+              "
               required
             />
             <input
@@ -96,7 +106,11 @@ export default function RegisterPage() {
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               placeholder="Email"
               type="email"
-              className="w-full mb-4 p-3 rounded-lg border border-white/30 bg-white/50 text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+              className="
+                w-full mb-4 p-3 rounded-lg border border-yellow-500/30
+                bg-black/50 text-white placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-yellow-500/50 transition
+              "
               required
             />
             <input
@@ -104,13 +118,21 @@ export default function RegisterPage() {
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               placeholder="Password"
-              className="w-full mb-4 p-3 rounded-lg border border-white/30 bg-white/50 text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+              className="
+                w-full mb-4 p-3 rounded-lg border border-yellow-500/30
+                bg-black/50 text-white placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-yellow-500/50 transition
+              "
               required
             />
             <select
               value={form.role}
               onChange={(e) => setForm({ ...form, role: e.target.value })}
-              className="w-full mb-4 p-3 rounded-lg border border-white/30 bg-white/50 text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-sky-400 transition"
+              className="
+                w-full mb-4 p-3 rounded-lg border border-yellow-500/30
+                bg-black/50 text-white placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-yellow-500/50 transition
+              "
             >
               <option value="job_seeker">Job Seeker</option>
               <option value="employer">Employer</option>
@@ -118,7 +140,13 @@ export default function RegisterPage() {
 
             <button
               type="submit"
-              className="w-full py-3 mb-4 bg-gradient-to-r from-sky-400 to-sky-600 text-white font-bold rounded-xl shadow-lg hover:from-sky-500 hover:to-sky-700 hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+              className="
+                w-full py-3 mb-4 bg-gradient-to-r from-yellow-500 to-yellow-600
+                text-black font-bold rounded-xl
+                hover:from-yellow-400 hover:to-yellow-500
+                hover:shadow-[0_0_25px_rgba(255,200,50,0.5)]
+                transform hover:scale-[1.03] transition-all duration-300
+              "
             >
               Register
             </button>
@@ -129,7 +157,7 @@ export default function RegisterPage() {
           <div className="mt-4">
             <Link
               to="/login"
-              className="text-white/90 hover:text-white underline font-medium transition"
+              className="text-yellow-300 hover:text-yellow-400 underline font-medium transition"
             >
               Already have an account? Login
             </Link>
